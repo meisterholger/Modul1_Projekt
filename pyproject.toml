@@ -27,6 +27,9 @@ lint = [
     "pylint==3.0.3",
 ]
 
+[tool.setuptools]
+py-modules = ["main", "app", "utils"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = "test_*.py"
