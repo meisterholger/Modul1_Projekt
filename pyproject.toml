@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=65.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fastapi-task-service"
+version = "0.1.0"
+description = "A simple FastAPI-based web service demonstrating HTTP endpoints and modular Python application architecture"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    {name = "Developer"}
+]
+keywords = ["fastapi", "api", "web-service"]
+
+dependencies = [
+    "fastapi==0.104.1",
+    "uvicorn==0.24.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==7.4.3",
+    "httpx==0.24.1",
+]
+lint = [
+    "pylint==3.0.3",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
