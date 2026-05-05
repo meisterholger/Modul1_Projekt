@@ -3,13 +3,13 @@ name: Tests
 run-name: Run automated tests
 
 on:
+  # Manually trigger workflow
+  workflow_dispatch:
   # Workflow run trigger events
   push:
     branches: ["main"]
   pull_request:
     branches: ["main"]
-  # Manually trigger workflow
-  workflow_dispatch:
 
 jobs:
   test:
