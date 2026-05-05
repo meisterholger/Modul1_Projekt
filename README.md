@@ -6,9 +6,10 @@ A simple FastAPI-based web service demonstrating HTTP endpoints and modular Pyth
 
 This project showcases a modern Python web application built with FastAPI and Uvicorn, featuring:
 
-- **main.py**: FastAPI application entry point with HTTP endpoints
-- **utils.py**: Utility module containing the task execution function
-- **requirements.txt**: Project dependencies
+- **app/**: Application package with FastAPI endpoints and utilities
+- **main.py**: Application entry point for Uvicorn server
+- **tests/**: Comprehensive test suite with pytest
+- **pyproject.toml**: Modern Python project configuration
 
 ## Features
 
@@ -20,20 +21,31 @@ The application provides two HTTP endpoints:
 ## Project Structure
 
 ```
-├── main.py          # FastAPI application and endpoint definitions
-├── utils.py         # Utility functions (run_task)
-├── requirements.txt # Project dependencies
-├── .gitignore       # Git ignore rules
-└── README.md        # This file
+Modul1_Projekt/
+├── app/
+│   ├── __init__.py      # Package definition
+│   ├── api.py           # FastAPI application and endpoints
+│   └── utils.py         # Utility functions (run_task)
+├── tests/
+│   ├── __init__.py      # Test package
+│   ├── test_api.py      # Tests for endpoints
+│   └── test_utils.py    # Tests for utilities
+├── main.py              # Entry point (Uvicorn server startup)
+├── pyproject.toml       # Project metadata and dependencies
+├── .gitignore           # Git ignore rules
+└── README.md            # This file
 ```
 
 ## Installation
 
-1. Install dependencies:
+1. Clone or navigate to the project directory
+2. Install the package in development mode:
 
 ```bash
-pip install -r requirements.txt
+pip install -e ".[dev]"
 ```
+
+This installs the project with all development dependencies including pytest.
 
 ## Running the Application
 
@@ -50,6 +62,21 @@ The API will be available at `http://localhost:8000`
 FastAPI provides interactive API documentation:
 - **Swagger UI**: http://localhost:8000/docs
 - **ReDoc**: http://localhost:8000/redoc
+
+## Testing
+
+Run the test suite:
+
+```bash
+pytest tests/ -v
+```
+
+Run specific tests:
+
+```bash
+pytest tests/test_api.py -v      # Test endpoints
+pytest tests/test_utils.py -v    # Test utilities
+```
 
 ## Endpoints
 
@@ -77,12 +104,27 @@ Returns:
 {"message": "Task completed successfully"}
 ```
 
+## Dependencies
+
+### Production
+- **fastapi** - Web framework
+- **uvicorn** - ASGI server
+
+### Development
+- **pytest** - Testing framework
+- **httpx** - HTTP client for testing
+
+See `pyproject.toml` for version specifications.
+
 ## Learning Objectives
 
 This project demonstrates:
 - Building HTTP APIs with FastAPI
 - Separation of concerns (API layer vs business logic)
-- Module imports and code organization
+- Package organization and module imports
 - Using async-capable web frameworks
 - Asynchronous server execution with Uvicorn
 - REST API design principles
+- Test-driven development with pytest
+- Modern Python project structure with pyproject.toml
+
