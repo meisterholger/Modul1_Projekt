@@ -1,19 +1,21 @@
 """
-Einstiegspunkt für das Programm. Hier werden die Funktionen aus utils.py aufgerufen.
-In diesem Beispiel wird eine Nachricht gedruckt, dann wird die Funktion print_message
-mit einer Wartezeit von 3 Sekunden aufgerufen, bevor eine weitere Nachricht gedruckt wird.
+Entry point for the program. Functions from utils.py are called here.
+Start the FastAPI app. The run_task function is controlled by a FastAPI endpoint,
+so it is not called directly in this file.
 """
 
-# Importieren der Funktion print_message aus utils.py
-from utils import print_message
+# Third-party imports
+import uvicorn
 
-# Hauptprogramm
-# Druckt eine Nachricht, um den Start des Programms anzuzeigen
-print("Programm gestartet.")
 
-# Ruft die Funktion print_message auf und übergibt eine Wartezeit von 3
-# Sekunden
-print_message(wait_time=3)
+if __name__ == "__main__":
+    print("Program started.")
 
-# Druckt eine Nachricht, um das Ende des Programms anzuzeigen
-print("Programm erfolgreich beendet.")
+    # Run the FastAPI app using Uvicorn
+    uvicorn.run("app:app", reload=True)
+
+    # run_task(wait_time=3) -- Will be controlled by FastAPI endpoint, so it's
+    # commented out here.
+
+    # Print a message to indicate the end of the program
+    print("Program ended successfully.")
