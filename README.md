@@ -113,6 +113,97 @@ Stop the container:
 docker stop <container_id>
 ```
 
+## Kubernetes Deployment
+
+### Prerequisites
+
+- Kubernetes cluster (e.g., Minikube, K3s, or cloud provider)
+- `kubectl` command-line tool installed
+- Docker image pushed to a registry (e.g., Docker Hub)
+
+### Project Structure
+
+Kubernetes manifests are located in the `kubernetes/` directory:
+
+```
+kubernetes/
+├── namespace.yaml      # Namespace for application isolation
+├── service.yaml        # LoadBalancer service for external access
+└── deployment.yaml     # Deployment with 2 replicas, health checks, and resource limits
+```
+
+### Deploy to Kubernetes
+
+1. Create the namespace, deployment, and service:
+
+```bash
+# Apply all manifests in order
+kubectl apply -f kubernetes/namespace.yaml
+kubectl apply -f kubernetes/deployment.yaml
+kubectl apply -f kubernetes/service.yaml
+
+# Or apply all at once
+kubectl apply -f kubernetes/
+```
+
+2. Verify deployment:
+
+```bash
+# Check all resources in the namespace
+kubectl get all -n apiservice
+
+# Check deployment status
+kubectl get deployment -n apiservice
+
+# Check pod logs
+kubectl logs -n apiservice -l app=api-service -f
+```
+
+### Configuration Details
+
+**Deployment Configuration:**
+- **Replicas**: 2 for high availability
+- **Resource Requests**: 64Mi memory, 100m CPU
+- **Resource Limits**: 128Mi memory, 500m CPU
+- **Liveness Probe**: Checks container health every 10 seconds
+- **Readiness Probe**: Checks pod readiness every 5 seconds
+
+**Service Configuration:**
+- **Type**: LoadBalancer (for external access)
+- **Port**: 8000 (exposed externally)
+- **Target Port**: 8000 (container port)
+
+### Access the Application
+
+Once deployed, get the external IP:
+
+```bash
+kubectl get service -n apiservice
+
+# URL will be available at: http://<EXTERNAL-IP>:8000
+# Swagger UI: http://<EXTERNAL-IP>:8000/docs
+```
+
+### Troubleshooting
+
+Check pod status:
+
+```bash
+kubectl describe pod -n apiservice -l app=api-service
+```
+
+View application logs:
+
+```bash
+kubectl logs -n apiservice -l app=api-service --tail=50
+```
+
+Delete deployment:
+
+```bash
+kubectl delete namespace apiservice
+```
+
 ## Testing
 
 Run the test suite:
