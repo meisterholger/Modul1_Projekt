@@ -63,6 +63,56 @@ FastAPI provides interactive API documentation:
 - **Swagger UI**: http://localhost:8000/docs
 - **ReDoc**: http://localhost:8000/redoc
 
+## Docker Deployment
+
+### Build Docker Image
+
+Create a `Dockerfile` in the project root:
+
+```dockerfile
+FROM python:3.13.2
+LABEL maintainer="Holger Meister"
+
+COPY . /app
+WORKDIR /app
+
+RUN pip install -e .
+
+CMD ["python", "main.py"]
+```
+
+Build the image:
+
+```bash
+docker build -t api-service .
+```
+
+### Run Docker Container
+
+Run the container with port mapping:
+
+```bash
+docker run -d -p 8000:8000 api-service
+```
+
+The API will be available at `http://localhost:8000`
+
+**Note:** The application is configured to listen on `0.0.0.0:8000` to be accessible from outside the container.
+
+### Container Logs
+
+View container logs:
+
+```bash
+docker logs <container_id>
+```
+
+Stop the container:
+
+```bash
+docker stop <container_id>
+```
+
 ## Testing
 
 Run the test suite:
