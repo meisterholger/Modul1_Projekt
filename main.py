@@ -1,7 +1,10 @@
 """
-Entry point for the program. Functions from utils.py are called here.
-Start the FastAPI app. The run_task function is controlled by a FastAPI endpoint,
-so it is not called directly in this file.
+FastAPI application entry point with HTTP endpoints.
+
+This module creates and configures the FastAPI application instance,
+defining two endpoints:
+- GET /: Root endpoint that returns server status
+- GET /run-task: Endpoint that executes the task function from utils.py
 """
 
 # Third-party imports
@@ -11,21 +14,23 @@ from utils import run_task
 
 app = FastAPI()
 
+
 @app.get("/")
-def run_task_endpoint():
+def root_endpoint():
     """
-    Endpoint to run the task with a 3-second delay.
-    
+    Endpoint for the root URL that runs a task and returns a success message.
+
     Returns:
-        dict: A message confirming the task has completed.
+        dict: A message confirming the server has started successfully.
     """
     return {"message": "Server started successfully!"}
+
 
 @app.get("/run-task")
 def run_task_endpoint():
     """
     Endpoint to run the task with a 3-second delay.
-    
+
     Returns:
         dict: A message confirming the task has completed.
     """
