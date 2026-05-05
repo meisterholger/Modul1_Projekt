@@ -13,7 +13,8 @@ if __name__ == "__main__":
     print("Program started.")
 
     # Run the FastAPI app using Uvicorn
-    uvicorn.run("app.api:app", reload=True)
+    # host="0.0.0.0" allows external access (necessary for Docker)
+    uvicorn.run("app.api:app", host="0.0.0.0", port=8000, reload=True)
 
     # Print a message to indicate the end of the program
     print("Program ended successfully.")
