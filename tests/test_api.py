@@ -1,7 +1,8 @@
 import pytest
 from fastapi.testclient import TestClient
 
-from app import app
+from app.api import app
+
 
 def test_root_endpoint():
     """
@@ -15,6 +16,7 @@ def test_root_endpoint():
     response = client.get("/")
     assert response.status_code == 200
     assert response.json() == {"message": "Server started successfully!"}
+
 
 def test_run_task_endpoint():
     """

@@ -7,7 +7,7 @@ defining two endpoints:
 """
 
 from fastapi import FastAPI
-from utils import run_task
+from app.utils import run_task
 
 app = FastAPI()
 
@@ -33,4 +33,3 @@ def run_task_endpoint():
     """
     run_task(wait_time=3)
     return {"message": "Task completed successfully"}
-

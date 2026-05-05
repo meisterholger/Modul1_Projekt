@@ -28,7 +28,7 @@ lint = [
 ]
 
 [tool.setuptools]
-py-modules = ["main", "app", "utils"]
+packages = ["app"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -1,5 +1,6 @@
 import pytest
-from utils import run_task
+from app.utils import run_task
+
 
 def test_run_task():
     """
