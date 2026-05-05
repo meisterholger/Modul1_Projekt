@@ -1,45 +1,88 @@
-# Programmablauf Übung
+# FastAPI Task Execution Service
 
-Ein einfaches Python-Programm zur Demonstration eines grundlegenden Programmablaufs.
+A simple FastAPI-based web service demonstrating HTTP endpoints and modular Python application architecture.
 
-## Beschreibung
+## Description
 
-Dieses Projekt zeigt die Struktur eines einfachen Python-Programms mit folgenden Komponenten:
+This project showcases a modern Python web application built with FastAPI and Uvicorn, featuring:
 
-- **main.py**: Der Einstiegspunkt des Programms
-- **utils.py**: Ein Hilfemodul mit wiederverwendbaren Funktionen
+- **main.py**: FastAPI application entry point with HTTP endpoints
+- **utils.py**: Utility module containing the task execution function
+- **requirements.txt**: Project dependencies
 
-## Programmablauf
+## Features
 
-Das Programm führt folgende Schritte aus:
+The application provides two HTTP endpoints:
 
-1. Startet das Programm und gibt "Programm gestartet." aus
-2. Ruft die Funktion `print_message()` aus dem `utils.py` Modul auf
-3. Die Funktion gibt "Task gestartet" aus
-4. Wartet 3 Sekunden (die Aufgabe wird simuliert)
-5. Gibt "Task abgeschlossen" aus
-6. Beendet das Programm mit der Meldung "Programm erfolgreich beendet."
+- **GET `/`** - Root endpoint that returns server status
+- **GET `/run-task`** - Endpoint that executes a task with a 3-second delay
 
-## Ausführung
+## Project Structure
 
-Um das Programm auszuführen, führen Sie folgenden Befehl aus:
+```
+├── main.py          # FastAPI application and endpoint definitions
+├── utils.py         # Utility functions (run_task)
+├── requirements.txt # Project dependencies
+├── .gitignore       # Git ignore rules
+└── README.md        # This file
+```
+
+## Installation
+
+1. Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+## Running the Application
+
+Start the development server:
 
 ```bash
 python main.py
 ```
 
-## Struktur
+The API will be available at `http://localhost:8000`
+
+### API Documentation
+
+FastAPI provides interactive API documentation:
+- **Swagger UI**: http://localhost:8000/docs
+- **ReDoc**: http://localhost:8000/redoc
+
+## Endpoints
+
+### Root Endpoint
 
 ```
-├── main.py       # Hauptprogramm - ruft Funktionen auf
-├── utils.py      # Hilfsfunktionen - enthält die print_message Funktion
-└── README.md     # Diese Datei
+GET /
 ```
 
-## Lernziel
+Returns:
+```json
+{"message": "Server started successfully!"}
+```
 
-Diese Übung zeigt:
-- Die Aufteilung von Code in Module
-- Das Importieren von Funktionen aus anderen Modulen
-- Die Verwendung von Parametern und Standardwerten
-- Die Verwendung von Verzögerungen im Programmablauf (time.sleep)
+### Task Execution Endpoint
+
+```
+GET /run-task
+```
+
+Executes the task function with a 3-second delay.
+
+Returns:
+```json
+{"message": "Task completed successfully"}
+```
+
+## Learning Objectives
+
+This project demonstrates:
+- Building HTTP APIs with FastAPI
+- Separation of concerns (API layer vs business logic)
+- Module imports and code organization
+- Using async-capable web frameworks
+- Asynchronous server execution with Uvicorn
+- REST API design principles
