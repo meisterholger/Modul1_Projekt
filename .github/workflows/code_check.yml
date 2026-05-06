@@ -26,7 +26,6 @@ jobs:
       - name: Install dependencies
         run: pip install -e ".[dev,lint]"
       
-      - uses: astral-sh/ruff-action@v3
       - name: Check ruff formatting
         run: ruff check . && ruff format --check .
 
