@@ -33,4 +33,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: api-service:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/api-service:latest
