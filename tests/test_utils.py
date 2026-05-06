@@ -1,4 +1,5 @@
-import pytest
+"""Tests for utility functions."""
+
 from app.utils import run_task
 
 
@@ -11,8 +12,5 @@ def test_run_task():
     the console, we will not capture the output in this test, but we will
     ensure that the function runs without raising any exceptions.
     """
-    try:
-        run_task(wait_time=1)  # Use a shorter wait time for testing
-        assert True  # If no exceptions are raised, the test passes
-    except Exception as e:
-        pytest.fail(f"run_task raised an exception: {e}")
+    run_task(wait_time=1)  # Use a shorter wait time for testing
+    assert True  # Test passes if no exceptions are raised

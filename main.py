@@ -18,4 +18,3 @@ if __name__ == "__main__":
 
     # Print a message to indicate the end of the program
     print("Program ended successfully.")
-

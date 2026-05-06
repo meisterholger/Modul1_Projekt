@@ -1,4 +1,5 @@
-import pytest
+"""Tests for the FastAPI application endpoints."""
+
 from fastapi.testclient import TestClient
 
 from app.api import app
