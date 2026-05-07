@@ -112,8 +112,55 @@ def test_run_task_batch_empty():
 
 
 # ============================================================================
-# Tests for individual functions (direct calls)
+# Tests for task_data validation (missing required keys)
 # ============================================================================
+
+def test_run_task_filter_missing_word_key():
+    """Test run_task filter with missing 'word' key."""
+    task_data = {"word_list": ["test", "testing"]}  # Missing 'word'
+    result = run_task("filter", task_data)
+
+    assert result["status"] == "error: Missing required key: word"
+    assert result["result"] is None
+
+
+def test_run_task_filter_missing_word_list_key():
+    """Test run_task filter with missing 'word_list' key."""
+    task_data = {"word": "test"}  # Missing 'word_list'
+    result = run_task("filter", task_data)
+
+    assert result["status"] == "error: Missing required key: word_list"
+    assert result["result"] is None
+
+
+def test_run_task_steps_missing_steps_key():
+    """Test run_task steps with missing 'steps' key."""
+    task_data = {}  # Missing 'steps'
+    result = run_task("steps", task_data)
+
+    assert result["status"] == "error: Missing required key: steps"
+    assert result["result"] is None
+
+
+def test_run_task_batch_missing_list_numbers_key():
+    """Test run_task batch with missing 'list_numbers' key."""
+    task_data = {}  # Missing 'list_numbers'
+    result = run_task("batch", task_data)
+
+    assert result["status"] == "error: Missing required key: list_numbers"
+    assert result["result"] is None
+
+
+def test_run_task_filter_all_keys_missing():
+    """Test run_task filter with all keys missing."""
+    task_data = {}
+    result = run_task("filter", task_data)
+
+    # Should report first missing key
+    assert "error: Missing required key:" in result["status"]
+    assert result["result"] is None
+
+
 
 
 def test_string_filter_basic():

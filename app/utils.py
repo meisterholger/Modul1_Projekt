@@ -114,6 +114,11 @@ def run_task(task_type: str, task_data: dict) -> dict:
                 "result": None,
                 "status": "error: task type not found",
             }
+        if task_type in TASK_DATA_SPECS:
+            required_keys = TASK_DATA_SPECS[task_type]
+            for key in required_keys:
+                if key not in task_data:
+                    raise ValueError(f"Missing required key: {key}")
 
         task_result = tasks[task_type](task_data)
         response = {
