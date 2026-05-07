@@ -42,10 +42,34 @@ Modul1_Projekt/
 2. Install the package in development mode:
 
 ```bash
-pip install -e ".[dev]"
+pip install -e ".[dev,lint]"
 ```
 
-This installs the project with all development dependencies including pytest.
+This installs the project with all development dependencies including pytest, ruff, pylint, and pre-commit.
+
+## Development Setup
+
+### Setting up Pre-commit Hooks
+
+To automatically run linting, formatting, and tests before each commit:
+
+```bash
+pre-commit install
+```
+
+This sets up Git hooks that will run:
+- **Ruff**: Linting and formatting checks
+- **Pylint**: Code quality analysis
+- **Pytest**: Unit tests
+- **General checks**: Trailing whitespace, YAML validation, etc.
+
+After running `pre-commit install` once, the hooks will automatically execute on every `git commit`.
+
+**Note:** While ruff and formatting issues are fixed automatically, you may need to resolve pylint warnings and failing tests manually. To manually run all pre-commit checks:
+
+```bash
+pre-commit run --all-files
+```
 
 ## Running the Application
 
@@ -268,4 +292,3 @@ This project demonstrates:
 - REST API design principles
 - Test-driven development with pytest
 - Modern Python project structure with pyproject.toml
-

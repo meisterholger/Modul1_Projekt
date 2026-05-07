@@ -23,6 +23,7 @@ dev = [
     "pytest==7.4.3",
     "httpx==0.24.1",
     "ruff==0.15.*",
+    "pre-commit==4.0.1",
 ]
 lint = [
     "pylint==3.0.3",
