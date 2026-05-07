@@ -18,8 +18,7 @@ def string_filter(word: str, list_with_words: list) -> dict:
     word_filter = [w for w in list_with_words if word in w]
     word_count = len(word_filter)
     task_result = {
-        "task": "filter",
-        "result": {"word_filter": word_filter, "word_count": word_count},
+        "data": {"word_filter": word_filter, "word_count": word_count},
         "status": "success" if word_filter else "no words found",
     }
     return task_result
@@ -36,10 +35,10 @@ def step_processing(steps: int) -> dict:
     """
     step_list = [f"Step {i}" for i in range(1, steps + 1)]
     task_result = {
-        "task": "steps",
-        "result": {"step_list": step_list},
+        "data": {"step_list": step_list},
         "status": "success" if step_list else "no steps created",
     }
+
     return task_result
 
 
@@ -60,8 +59,7 @@ def calculate_square(list_numbers: list) -> dict:
     average_squared = sum_squared / len(dict_squared) if dict_squared else 0
 
     task_result = {
-        "task": "batch",
-        "result": {
+        "data": {
             "dict_squared": dict_squared,
             "sum_squared": sum_squared,
             "average_squared": average_squared,
@@ -104,13 +102,19 @@ def run_task(task_type: str, data) -> dict:
 
         data_processed = data if isinstance(data, tuple) else (data,)
         task_result = tasks[task_type](*data_processed)
-        return task_result
+        response = {
+            "task": task_type,
+            "status": task_result["status"],
+            "result": task_result["data"]
+            if task_result["status"] == "success"
+            else None,
+        }
+        return response
     except (TypeError, ValueError, IndexError) as e:
-        task_result = {
+        return {
             "task": task_type,
             "result": None,
             "status": f"error: {e}",
         }
-        return task_result
     finally:
         print("Task completed")

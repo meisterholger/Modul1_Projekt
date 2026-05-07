@@ -70,8 +70,7 @@ def test_run_task_filter_no_matches():
 
     assert result["task"] == "filter"
     assert result["status"] == "no words found"
-    assert result["result"]["word_filter"] == []
-    assert result["result"]["word_count"] == 0
+    assert result["result"] is None
 
 
 def test_run_task_steps_zero():
@@ -80,7 +79,7 @@ def test_run_task_steps_zero():
 
     assert result["task"] == "steps"
     assert result["status"] == "no steps created"
-    assert result["result"]["step_list"] == []
+    assert result["result"] is None
 
 
 def test_run_task_batch_single_number():
@@ -99,9 +98,7 @@ def test_run_task_batch_empty():
 
     assert result["task"] == "batch"
     assert result["status"] == "no numbers provided"
-    assert result["result"]["dict_squared"] == []
-    assert result["result"]["sum_squared"] == 0
-    assert result["result"]["average_squared"] == 0
+    assert result["result"] is None
 
 
 # ============================================================================
@@ -113,19 +110,17 @@ def test_string_filter_basic():
     """Test string_filter function directly."""
     result = string_filter("test", ["test", "testing", "example", "best", "contest"])
 
-    assert result["task"] == "filter"
     assert result["status"] == "success"
-    assert result["result"]["word_count"] == 3
-    assert set(result["result"]["word_filter"]) == {"test", "testing", "contest"}
+    assert result["data"]["word_count"] == 3
+    assert set(result["data"]["word_filter"]) == {"test", "testing", "contest"}
 
 
 def test_step_processing_basic():
     """Test step_processing function directly."""
     result = step_processing(5)
 
-    assert result["task"] == "steps"
     assert result["status"] == "success"
-    assert result["result"]["step_list"] == [
+    assert result["data"]["step_list"] == [
         "Step 1",
         "Step 2",
         "Step 3",
@@ -139,7 +134,7 @@ def test_step_processing_zero():
     result = step_processing(0)
 
     assert result["status"] == "no steps created"
-    assert result["result"]["step_list"] == []
+    assert result["data"]["step_list"] == []
 
 
 def test_step_processing_negative():
@@ -147,27 +142,26 @@ def test_step_processing_negative():
     result = step_processing(-3)
 
     assert result["status"] == "no steps created"
-    assert result["result"]["step_list"] == []
+    assert result["data"]["step_list"] == []
 
 
 def test_calculate_square_basic():
     """Test calculate_square function directly."""
     result = calculate_square([1, 2, 3, 4])
 
-    assert result["task"] == "batch"
     assert result["status"] == "success"
-    assert result["result"]["sum_squared"] == 30  # 1 + 4 + 9 + 16
-    assert result["result"]["average_squared"] == pytest.approx(7.5)
-    assert len(result["result"]["dict_squared"]) == 4
+    assert result["data"]["sum_squared"] == 30  # 1 + 4 + 9 + 16
+    assert result["data"]["average_squared"] == pytest.approx(7.5)
+    assert len(result["data"]["dict_squared"]) == 4
 
 
 def test_calculate_square_single():
     """Test calculate_square with single number."""
     result = calculate_square([5])
 
-    assert result["result"]["sum_squared"] == 25
-    assert result["result"]["average_squared"] == 25.0
-    assert result["result"]["dict_squared"][0] == {"input": 5, "output": 25}
+    assert result["data"]["sum_squared"] == 25
+    assert result["data"]["average_squared"] == 25.0
+    assert result["data"]["dict_squared"][0] == {"input": 5, "output": 25}
 
 
 def test_calculate_square_empty():
@@ -175,5 +169,5 @@ def test_calculate_square_empty():
     result = calculate_square([])
 
     assert result["status"] == "no numbers provided"
-    assert result["result"]["sum_squared"] == 0
-    assert result["result"]["average_squared"] == 0
+    assert result["data"]["sum_squared"] == 0
+    assert result["data"]["average_squared"] == 0
