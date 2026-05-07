@@ -21,7 +21,7 @@ spec:
         ports:
         - name: http
           containerPort: 8000
-        
+
         # Resource management
         resources:
           requests:
@@ -30,7 +30,7 @@ spec:
           limits:
             memory: "128Mi"
             cpu: "500m"
-        
+
         # Health checks
         livenessProbe:
           httpGet:
@@ -40,7 +40,7 @@ spec:
           periodSeconds: 10
           timeoutSeconds: 5
           failureThreshold: 3
-        
+
         readinessProbe:
           httpGet:
             path: /

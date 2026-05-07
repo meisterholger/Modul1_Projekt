@@ -83,8 +83,12 @@ def test_calculate_square_4():
     check that the returned list contains the correct squares of those numbers.
     """
     numbers = [1, 2, 3, 4]
-    expected_output = [{"input": 1, "output": 1}, {"input": 2, "output": 4}, {
-        "input": 3, "output": 9}, {"input": 4, "output": 16}]
+    expected_output = [
+        {"input": 1, "output": 1},
+        {"input": 2, "output": 4},
+        {"input": 3, "output": 9},
+        {"input": 4, "output": 16},
+    ]
 
     list_squared, sum_squared, average_squared = calculate_square(numbers)
     print(sum_squared)
@@ -101,8 +105,11 @@ def test_calculate_square_3():
     check that the returned list contains the correct squares of those numbers.
     """
     numbers = [1, 2, 3]
-    expected_output = [{"input": 1, "output": 1}, {
-        "input": 2, "output": 4}, {"input": 3, "output": 9}]
+    expected_output = [
+        {"input": 1, "output": 1},
+        {"input": 2, "output": 4},
+        {"input": 3, "output": 9},
+    ]
 
     list_squared, sum_squared, average_squared = calculate_square(numbers)
     print(sum_squared)
