@@ -7,7 +7,6 @@ defining two endpoints:
 """
 
 from fastapi import FastAPI
-from app.utils import run_task
 
 app = FastAPI()
 
@@ -23,13 +22,10 @@ def root_endpoint():
     return {"message": "Server started successfully!"}
 
 
-@app.get("/run-task")
-def run_task_endpoint():
-    """
-    Endpoint to run the task with a 3-second delay.
-
-    Returns:
-        dict: A message confirming the task has completed.
-    """
-    run_task(wait_time=3)
-    return {"message": "Task completed successfully"}
+# @app.get("/run-task")
+# def run_task_endpoint():
+#     """
+#     Endpoint to execute a task.
+#     TODO: Implement with query parameters for flexible task execution.
+#     """
+#     pass

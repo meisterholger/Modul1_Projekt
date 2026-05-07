@@ -4,115 +4,176 @@ import pytest
 from app.utils import run_task, string_filter, step_processing, calculate_square
 
 
-def test_run_task():
-    """
-    Test the run_task function to ensure it executes without errors.
-
-    This test will call the run_task function with a short wait time and
-    check that it completes successfully. Since run_task prints output to
-    the console, we will not capture the output in this test, but we will
-    ensure that the function runs without raising any exceptions.
-    """
-    run_task(wait_time=1)  # Use a shorter wait time for testing
-    assert True  # Test passes if no exceptions are raised
+# ============================================================================
+# Tests for run_task (Orchestrator)
+# ============================================================================
 
 
-def test_string_filter():
-    """
-    Test the string_filter function to ensure it correctly filters a list of words.
+def test_run_task_filter_basic():
+    """Test run_task with filter task and multiple words."""
+    result = run_task(
+        "filter", ("test", ["test", "testing", "example", "best", "contest"])
+    )
 
-    This test will call the string_filter function with a sample word and a list of words,
-    and check that the returned list contains only the words that include the sample word.
-    """
-    sample_word = "test"
-    word_list = ["test", "testing", "example", "best", "contest"]
-    expected_output = ["test", "testing", "contest"]
-
-    result, count = string_filter(sample_word, word_list)
-    assert result == expected_output
-    assert count == len(expected_output)
+    assert result["task"] == "filter"
+    assert result["status"] == "success"
+    assert result["result"]["word_count"] == 3
+    assert set(result["result"]["word_filter"]) == {"test", "testing", "contest"}
 
 
-def test_step_processing_5():
-    """
-    Test the step_processing function to ensure it creates the correct list of steps.
+def test_run_task_filter_simple():
+    """Test run_task with filter task and simple input."""
+    result = run_task("filter", ("test", ["test", "testing"]))
 
-    This test will call the step_processing function with a specific number of steps and
-    check that the returned list contains the correct step messages.
-    """
-    steps = 5
-    expected_output = ["Step 1", "Step 2", "Step 3", "Step 4", "Step 5"]
-
-    result = step_processing(steps)
-    assert result == expected_output
+    assert result["task"] == "filter"
+    assert result["status"] == "success"
+    assert result["result"]["word_count"] == 2
+    assert result["result"]["word_filter"] == ["test", "testing"]
 
 
-def test_step_processing_0():
-    """
-    Test the step_processing function to ensure it creates the correct list of steps.
+def test_run_task_steps_basic():
+    """Test run_task with steps task."""
+    result = run_task("steps", 5)
 
-    This test will call the step_processing function with a specific number of steps and
-    check that the returned list contains the correct step messages.
-    """
-    steps = 0
-    expected_output = []
+    assert result["task"] == "steps"
+    assert result["status"] == "success"
+    assert result["result"]["step_list"] == [
+        "Step 1",
+        "Step 2",
+        "Step 3",
+        "Step 4",
+        "Step 5",
+    ]
 
-    result = step_processing(steps)
-    assert result == expected_output
+
+def test_run_task_batch_basic():
+    """Test run_task with batch task."""
+    result = run_task("batch", [1, 2, 3, 4, 5])
+
+    assert result["task"] == "batch"
+    assert result["status"] == "success"
+    assert result["result"]["sum_squared"] == 55  # 1 + 4 + 9 + 16 + 25
+    assert result["result"]["average_squared"] == pytest.approx(11.0)  # 55 / 5
+
+
+def test_run_task_invalid_task_type():
+    """Test run_task with invalid task type."""
+    result = run_task("invalid_task", [])
+
+    assert result["status"] == "error: task type not found"
+    assert result["result"] is None
+
+
+def test_run_task_filter_no_matches():
+    """Test run_task filter with no matching words."""
+    result = run_task("filter", ("xyz", ["test", "testing", "example"]))
+
+    assert result["task"] == "filter"
+    assert result["status"] == "no words found"
+    assert result["result"]["word_filter"] == []
+    assert result["result"]["word_count"] == 0
+
+
+def test_run_task_steps_zero():
+    """Test run_task steps with zero steps."""
+    result = run_task("steps", 0)
+
+    assert result["task"] == "steps"
+    assert result["status"] == "no steps created"
+    assert result["result"]["step_list"] == []
+
+
+def test_run_task_batch_single_number():
+    """Test run_task batch with single number."""
+    result = run_task("batch", [3])
+
+    assert result["task"] == "batch"
+    assert result["status"] == "success"
+    assert result["result"]["sum_squared"] == 9
+    assert result["result"]["average_squared"] == 9.0
+
+
+def test_run_task_batch_empty():
+    """Test run_task batch with empty list."""
+    result = run_task("batch", [])
+
+    assert result["task"] == "batch"
+    assert result["status"] == "no numbers provided"
+    assert result["result"]["dict_squared"] == []
+    assert result["result"]["sum_squared"] == 0
+    assert result["result"]["average_squared"] == 0
+
+
+# ============================================================================
+# Tests for individual functions (direct calls)
+# ============================================================================
+
+
+def test_string_filter_basic():
+    """Test string_filter function directly."""
+    result = string_filter("test", ["test", "testing", "example", "best", "contest"])
+
+    assert result["task"] == "filter"
+    assert result["status"] == "success"
+    assert result["result"]["word_count"] == 3
+    assert set(result["result"]["word_filter"]) == {"test", "testing", "contest"}
+
+
+def test_step_processing_basic():
+    """Test step_processing function directly."""
+    result = step_processing(5)
+
+    assert result["task"] == "steps"
+    assert result["status"] == "success"
+    assert result["result"]["step_list"] == [
+        "Step 1",
+        "Step 2",
+        "Step 3",
+        "Step 4",
+        "Step 5",
+    ]
+
+
+def test_step_processing_zero():
+    """Test step_processing with zero."""
+    result = step_processing(0)
+
+    assert result["status"] == "no steps created"
+    assert result["result"]["step_list"] == []
 
 
 def test_step_processing_negative():
-    """
-    Test the step_processing function to ensure it creates the correct list of steps.
+    """Test step_processing with negative number."""
+    result = step_processing(-3)
 
-    This test will call the step_processing function with a specific number of steps and
-    check that the returned list contains the correct step messages.
-    """
-    steps = -3
-    expected_output = []
-
-    result = step_processing(steps)
-    assert result == expected_output
+    assert result["status"] == "no steps created"
+    assert result["result"]["step_list"] == []
 
 
-def test_calculate_square_4():
-    """
-    Test the calculate_square function to ensure it correctly calculates the squares of numbers.
+def test_calculate_square_basic():
+    """Test calculate_square function directly."""
+    result = calculate_square([1, 2, 3, 4])
 
-    This test will call the calculate_square function with a list of numbers and
-    check that the returned list contains the correct squares of those numbers.
-    """
-    numbers = [1, 2, 3, 4]
-    expected_output = [
-        {"input": 1, "output": 1},
-        {"input": 2, "output": 4},
-        {"input": 3, "output": 9},
-        {"input": 4, "output": 16},
-    ]
-
-    list_squared, sum_squared, average_squared = calculate_square(numbers)
-    print(sum_squared)
-    assert list_squared == expected_output
-    assert sum_squared == 30
-    assert average_squared == pytest.approx(7.5)
+    assert result["task"] == "batch"
+    assert result["status"] == "success"
+    assert result["result"]["sum_squared"] == 30  # 1 + 4 + 9 + 16
+    assert result["result"]["average_squared"] == pytest.approx(7.5)
+    assert len(result["result"]["dict_squared"]) == 4
 
 
-def test_calculate_square_3():
-    """
-    Test the calculate_square function to ensure it correctly calculates the squares of numbers.
+def test_calculate_square_single():
+    """Test calculate_square with single number."""
+    result = calculate_square([5])
 
-    This test will call the calculate_square function with a list of numbers and
-    check that the returned list contains the correct squares of those numbers.
-    """
-    numbers = [1, 2, 3]
-    expected_output = [
-        {"input": 1, "output": 1},
-        {"input": 2, "output": 4},
-        {"input": 3, "output": 9},
-    ]
+    assert result["result"]["sum_squared"] == 25
+    assert result["result"]["average_squared"] == 25.0
+    assert result["result"]["dict_squared"][0] == {"input": 5, "output": 25}
 
-    list_squared, sum_squared, average_squared = calculate_square(numbers)
-    print(sum_squared)
-    assert list_squared == expected_output
-    assert sum_squared == 14
-    assert average_squared == pytest.approx(14 / 3)
+
+def test_calculate_square_empty():
+    """Test calculate_square with empty list."""
+    result = calculate_square([])
+
+    assert result["status"] == "no numbers provided"
+    assert result["result"]["sum_squared"] == 0
+    assert result["result"]["average_squared"] == 0
