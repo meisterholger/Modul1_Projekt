@@ -11,9 +11,11 @@ from app.utils import run_task, string_filter, step_processing, calculate_square
 
 def test_run_task_filter_basic():
     """Test run_task with filter task and multiple words."""
-    result = run_task(
-        "filter", ("test", ["test", "testing", "example", "best", "contest"])
-    )
+    task_data = {
+        "word": "test",
+        "word_list": ["test", "testing", "example", "best", "contest"],
+    }
+    result = run_task("filter", task_data)
 
     assert result["task"] == "filter"
     assert result["status"] == "success"
@@ -23,7 +25,8 @@ def test_run_task_filter_basic():
 
 def test_run_task_filter_simple():
     """Test run_task with filter task and simple input."""
-    result = run_task("filter", ("test", ["test", "testing"]))
+    task_data = {"word": "test", "word_list": ["test", "testing"]}
+    result = run_task("filter", task_data)
 
     assert result["task"] == "filter"
     assert result["status"] == "success"
@@ -33,7 +36,8 @@ def test_run_task_filter_simple():
 
 def test_run_task_steps_basic():
     """Test run_task with steps task."""
-    result = run_task("steps", 5)
+    task_data = {"steps": 5}
+    result = run_task("steps", task_data)
 
     assert result["task"] == "steps"
     assert result["status"] == "success"
@@ -48,7 +52,8 @@ def test_run_task_steps_basic():
 
 def test_run_task_batch_basic():
     """Test run_task with batch task."""
-    result = run_task("batch", [1, 2, 3, 4, 5])
+    task_data = {"list_numbers": [1, 2, 3, 4, 5]}
+    result = run_task("batch", task_data)
 
     assert result["task"] == "batch"
     assert result["status"] == "success"
@@ -58,7 +63,8 @@ def test_run_task_batch_basic():
 
 def test_run_task_invalid_task_type():
     """Test run_task with invalid task type."""
-    result = run_task("invalid_task", [])
+    task_data = {"some_key": "some_value"}
+    result = run_task("invalid_task", task_data)
 
     assert result["status"] == "error: task type not found"
     assert result["result"] is None
@@ -66,7 +72,8 @@ def test_run_task_invalid_task_type():
 
 def test_run_task_filter_no_matches():
     """Test run_task filter with no matching words."""
-    result = run_task("filter", ("xyz", ["test", "testing", "example"]))
+    task_data = {"word": "xyz", "word_list": ["test", "testing", "example"]}
+    result = run_task("filter", task_data)
 
     assert result["task"] == "filter"
     assert result["status"] == "no words found"
@@ -75,7 +82,8 @@ def test_run_task_filter_no_matches():
 
 def test_run_task_steps_zero():
     """Test run_task steps with zero steps."""
-    result = run_task("steps", 0)
+    task_data = {"steps": 0}
+    result = run_task("steps", task_data)
 
     assert result["task"] == "steps"
     assert result["status"] == "no steps created"
@@ -84,7 +92,8 @@ def test_run_task_steps_zero():
 
 def test_run_task_batch_single_number():
     """Test run_task batch with single number."""
-    result = run_task("batch", [3])
+    task_data = {"list_numbers": [3]}
+    result = run_task("batch", task_data)
 
     assert result["task"] == "batch"
     assert result["status"] == "success"
@@ -94,7 +103,8 @@ def test_run_task_batch_single_number():
 
 def test_run_task_batch_empty():
     """Test run_task batch with empty list."""
-    result = run_task("batch", [])
+    task_data = {"list_numbers": []}
+    result = run_task("batch", task_data)
 
     assert result["task"] == "batch"
     assert result["status"] == "no numbers provided"
@@ -108,7 +118,11 @@ def test_run_task_batch_empty():
 
 def test_string_filter_basic():
     """Test string_filter function directly."""
-    result = string_filter("test", ["test", "testing", "example", "best", "contest"])
+    test_data = {
+        "word": "test",
+        "word_list": ["test", "testing", "example", "best", "contest"],
+    }
+    result = string_filter(test_data)
 
     assert result["status"] == "success"
     assert result["data"]["word_count"] == 3
@@ -117,8 +131,8 @@ def test_string_filter_basic():
 
 def test_step_processing_basic():
     """Test step_processing function directly."""
-    result = step_processing(5)
-
+    test_data = {"steps": 5}
+    result = step_processing(test_data)
     assert result["status"] == "success"
     assert result["data"]["step_list"] == [
         "Step 1",
@@ -131,7 +145,8 @@ def test_step_processing_basic():
 
 def test_step_processing_zero():
     """Test step_processing with zero."""
-    result = step_processing(0)
+    test_data = {"steps": 0}
+    result = step_processing(test_data)
 
     assert result["status"] == "no steps created"
     assert result["data"]["step_list"] == []
@@ -139,7 +154,8 @@ def test_step_processing_zero():
 
 def test_step_processing_negative():
     """Test step_processing with negative number."""
-    result = step_processing(-3)
+    test_data = {"steps": -3}
+    result = step_processing(test_data)
 
     assert result["status"] == "no steps created"
     assert result["data"]["step_list"] == []
@@ -147,7 +163,8 @@ def test_step_processing_negative():
 
 def test_calculate_square_basic():
     """Test calculate_square function directly."""
-    result = calculate_square([1, 2, 3, 4])
+    test_data = {"list_numbers": [1, 2, 3, 4]}
+    result = calculate_square(test_data)
 
     assert result["status"] == "success"
     assert result["data"]["sum_squared"] == 30  # 1 + 4 + 9 + 16
@@ -157,7 +174,8 @@ def test_calculate_square_basic():
 
 def test_calculate_square_single():
     """Test calculate_square with single number."""
-    result = calculate_square([5])
+    test_data = {"list_numbers": [5]}
+    result = calculate_square(test_data)
 
     assert result["data"]["sum_squared"] == 25
     assert result["data"]["average_squared"] == 25.0
@@ -166,7 +184,8 @@ def test_calculate_square_single():
 
 def test_calculate_square_empty():
     """Test calculate_square with empty list."""
-    result = calculate_square([])
+    test_data = {"list_numbers": []}
+    result = calculate_square(test_data)
 
     assert result["status"] == "no numbers provided"
     assert result["data"]["sum_squared"] == 0

@@ -1,20 +1,31 @@
-"""
-This module contains utility functions that can be used in various parts of the project.
-In this case, it contains a function `run_task` that prints a message
-indicating the start and end of a task, with a delay in between.
+"""Task processing utility module.
+
+Provides functions for executing various data processing tasks through
+a centralized orchestrator (run_task) that handles task routing and response formatting.
 """
 
+# Task Data Format Specification
+# Defines the required keys for each task type's input dictionary
+TASK_DATA_SPECS = {
+    "filter": ["word", "word_list"],
+    "steps": ["steps"],
+    "batch": ["list_numbers"],
+}
 
-def string_filter(word: str, list_with_words: list) -> dict:
+
+def string_filter(task_data: dict) -> dict:
     """Filter a list of words based on a given word.
 
     Args:
-        word (str): The word to filter by.
-        list_with_words (list): The list of words to filter.
+        task_data (dict): Dictionary containing 'word' and 'word_list' keys.
+            - word (str): The word to filter by.
+            - word_list (list): The list of words to filter.
 
     Returns:
         dict: Task result containing filtered words and count.
     """
+    word = task_data["word"]
+    list_with_words = task_data["word_list"]
     word_filter = [w for w in list_with_words if word in w]
     word_count = len(word_filter)
     task_result = {
@@ -24,35 +35,39 @@ def string_filter(word: str, list_with_words: list) -> dict:
     return task_result
 
 
-def step_processing(steps: int) -> dict:
+def step_processing(task_data: dict) -> dict:
     """Generate a sequence of step labels.
 
     Args:
-        steps (int): The number of steps to generate.
+        task_data (dict): Dictionary containing 'steps' key.
+            - steps (int): The number of steps to generate.
+
 
     Returns:
         dict: Task result containing the list of step labels.
     """
+    steps = task_data["steps"]
     step_list = [f"Step {i}" for i in range(1, steps + 1)]
     task_result = {
         "data": {"step_list": step_list},
         "status": "success" if step_list else "no steps created",
     }
-
     return task_result
 
 
-def calculate_square(list_numbers: list) -> dict:
+def calculate_square(task_data: dict) -> dict:
     """Calculate statistics on squared numbers.
 
     Computes the square of each number and calculates sum and average.
 
     Args:
-        list_numbers (list): A list of numbers to be squared.
+        task_data (dict): Dictionary containing 'list_numbers' key.
+            - list_numbers (list): A list of numbers to be squared.
 
     Returns:
         dict: Task result containing squared values and their statistics.
     """
+    list_numbers = task_data["list_numbers"]
     dict_squared = [{"input": num, "output": num**2} for num in list_numbers]
 
     sum_squared = sum(item["output"] for item in dict_squared)
@@ -66,7 +81,6 @@ def calculate_square(list_numbers: list) -> dict:
         },
         "status": "success" if dict_squared else "no numbers provided",
     }
-
     return task_result
 
 
@@ -79,14 +93,15 @@ tasks = {
 
 
 # Function definition
-def run_task(task_type: str, data) -> dict:
+def run_task(task_type: str, task_data: dict) -> dict:
     """Execute a task function based on the type and provided data.
 
     Handles task execution with error handling and always returns a dict.
 
     Args:
         task_type (str): The type of task to run ("filter", "steps", or "batch").
-        data: The data to be processed by the task function.
+        task_data (dict): The data to be processed by the task function.
+            See TASK_DATA_SPECS for required keys per task type.
 
     Returns:
         dict: Task result with status and output, or error information.
@@ -100,8 +115,7 @@ def run_task(task_type: str, data) -> dict:
                 "status": "error: task type not found",
             }
 
-        data_processed = data if isinstance(data, tuple) else (data,)
-        task_result = tasks[task_type](*data_processed)
+        task_result = tasks[task_type](task_data)
         response = {
             "task": task_type,
             "status": task_result["status"],
