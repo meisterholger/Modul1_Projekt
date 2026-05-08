@@ -13,10 +13,24 @@ This project showcases a modern Python web application built with FastAPI and Uv
 
 ## Features
 
-The application provides two HTTP endpoints:
+The application provides HTTP endpoints with task execution capabilities:
 
 - **GET `/`** - Root endpoint that returns server status
-- **GET `/run-task`** - Endpoint that executes a task with a 3-second delay
+- **POST `/run-task`** - Endpoint that executes different task types (filter, steps, or batch)
+
+### Supported Task Types
+
+1. **filter** - Filter a list of words based on a search term
+   - Requires: `word` (str), `word_list` (list of str)
+   - Returns: Filtered word list and match count
+
+2. **steps** - Generate a sequence of numbered step labels
+   - Requires: `steps` (int)
+   - Returns: List of step labels ("Step 1", "Step 2", etc.)
+
+3. **batch** - Calculate statistics on squared numbers
+   - Requires: `list_numbers` (list of int/float)
+   - Returns: Dictionary of squared values, sum, and average
 
 ## Project Structure
 
@@ -259,14 +273,133 @@ Returns:
 ### Task Execution Endpoint
 
 ```
-GET /run-task
+POST /run-task
 ```
 
-Executes the task function with a 3-second delay.
-
-Returns:
+**Request Body:**
 ```json
-{"message": "Task completed successfully"}
+{
+  "task_type": "filter|steps|batch",
+  "task_data": {
+    // Task-specific data (see examples below)
+  }
+}
+```
+
+**Response Structure:**
+```json
+{
+  "task": "task_type",
+  "status": "success|error",
+  "message": "Status message or null",
+  "result": {
+    // Task-specific result or error details
+  }
+}
+```
+
+#### Example 1: Filter Task
+
+**Request:**
+```json
+{
+  "task_type": "filter",
+  "task_data": {
+    "word": "test",
+    "word_list": ["test", "testing", "example", "best"]
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "task": "filter",
+  "status": "success",
+  "message": "Found 3 matches",
+  "result": {
+    "word_filter": ["test", "testing", "best"]
+  }
+}
+```
+
+#### Example 2: Steps Task
+
+**Request:**
+```json
+{
+  "task_type": "steps",
+  "task_data": {
+    "steps": 3
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "task": "steps",
+  "status": "success",
+  "message": null,
+  "result": {
+    "step_list": ["Step 1", "Step 2", "Step 3"]
+  }
+}
+```
+
+#### Example 3: Batch Task
+
+**Request:**
+```json
+{
+  "task_type": "batch",
+  "task_data": {
+    "list_numbers": [1, 2, 3]
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "task": "batch",
+  "status": "success",
+  "message": null,
+  "result": {
+    "dict_squared": [
+      {"input": 1, "output": 1},
+      {"input": 2, "output": 4},
+      {"input": 3, "output": 9}
+    ],
+    "sum_squared": 14,
+    "average_squared": 4.67
+  }
+}
+```
+
+#### Error Response Example
+
+**Request (Invalid type in filter):**
+```json
+{
+  "task_type": "filter",
+  "task_data": {
+    "word": 123,
+    "word_list": ["test"]
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "task": "filter",
+  "status": "error",
+  "message": "filter values must be strings",
+  "result": {
+    "word_filter": null
+  }
+}
 ```
 
 ## Dependencies
