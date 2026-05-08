@@ -26,11 +26,24 @@ def string_filter(task_data: dict) -> dict:
     """
     word = task_data["word"]
     list_with_words = task_data["word_list"]
+    # Guard Clause
+    if not isinstance(word, str) or not all(
+        isinstance(w, str) for w in list_with_words
+    ):
+        task_result = {
+            "data": {"word_filter": None},
+            "status": "error",
+            "message": "filter values must be strings",
+        }
+        return task_result
+
+    # In case the Guard Clause is not triggered:
     word_filter = [w for w in list_with_words if word in w]
     word_count = len(word_filter)
     task_result = {
-        "data": {"word_filter": word_filter, "word_count": word_count},
-        "status": "success" if word_filter else "no words found",
+        "data": {"word_filter": word_filter if word_filter else None},
+        "status": "success",
+        "message": f"Found {word_count} matches",
     }
     return task_result
 
@@ -42,15 +55,24 @@ def step_processing(task_data: dict) -> dict:
         task_data (dict): Dictionary containing 'steps' key.
             - steps (int): The number of steps to generate.
 
-
     Returns:
         dict: Task result containing the list of step labels.
     """
     steps = task_data["steps"]
+    # Guard Clause
+    if not isinstance(steps, int):
+        task_result = {
+            "data": {"step_list": None},
+            "status": "error",
+            "message": "steps must be an integer",
+        }
+        return task_result
+    # In case the Guard Clause is not triggered:
     step_list = [f"Step {i}" for i in range(1, steps + 1)]
     task_result = {
-        "data": {"step_list": step_list},
-        "status": "success" if step_list else "no steps created",
+        "data": {"step_list": step_list if step_list else None},
+        "status": "success",
+        "message": None if step_list else "no steps created",
     }
     return task_result
 
@@ -68,8 +90,22 @@ def calculate_square(task_data: dict) -> dict:
         dict: Task result containing squared values and their statistics.
     """
     list_numbers = task_data["list_numbers"]
+    # Guard Clause
+    if not isinstance(list_numbers, list) or not all(
+        isinstance(num, (int, float)) for num in list_numbers
+    ):
+        task_result = {
+            "data": {
+                "dict_squared": None,
+                "sum_squared": None,
+                "average_squared": None,
+            },
+            "status": "error",
+            "message": "numbers must be int or float",
+        }
+        return task_result
+    # In case the Guard Clause is not triggered:
     dict_squared = [{"input": num, "output": num**2} for num in list_numbers]
-
     sum_squared = sum(item["output"] for item in dict_squared)
     average_squared = sum_squared / len(dict_squared) if dict_squared else 0
 
@@ -79,7 +115,8 @@ def calculate_square(task_data: dict) -> dict:
             "sum_squared": sum_squared,
             "average_squared": average_squared,
         },
-        "status": "success" if dict_squared else "no numbers provided",
+        "status": "success",
+        "message": None,
     }
     return task_result
 
@@ -112,7 +149,8 @@ def run_task(task_type: str, task_data: dict) -> dict:
             return {
                 "task": task_type,
                 "result": None,
-                "status": "error: task type not found",
+                "status": "error",
+                "message": "task type not found",
             }
         if task_type in TASK_DATA_SPECS:
             required_keys = TASK_DATA_SPECS[task_type]
@@ -124,16 +162,16 @@ def run_task(task_type: str, task_data: dict) -> dict:
         response = {
             "task": task_type,
             "status": task_result["status"],
-            "result": task_result["data"]
-            if task_result["status"] == "success"
-            else None,
+            "message": task_result["message"],
+            "result": task_result["data"],
         }
         return response
     except (TypeError, ValueError, IndexError) as e:
         return {
             "task": task_type,
+            "status": "error",
+            "message": str(e),
             "result": None,
-            "status": f"error: {e}",
         }
     finally:
         print("Task completed")
